@@ -134,3 +134,43 @@ def fibo(n):
     for _ in range(n):
         a, b = b, a+b
     return a
+
+#######################그래프#################
+from collections import deque
+def dfs2(graph, start_node):    
+    visited = []
+    need_visited = deque()
+
+    need_visited.append(start_node)
+    
+    while need_visited:
+        node = need_visited.pop()
+ 
+        if node not in visited:
+ 
+            visited.append(node)
+            need_visited.extend(graph[node])
+                
+    return visited
+
+def dfs_recursive(graph, start, visited = []):
+    visited.append(start)
+ 
+    for node in graph[start]:
+        if node not in visited:
+            dfs_recursive(graph, node, visited)
+    return visited
+
+def bfs(graph, start_node):
+    need_visited, visited = [], []
+    need_visited.append(start_node)
+    
+    
+    while need_visited:
+        node = need_visited[0]
+        del need_visited[0]
+        
+        if node not in visited:
+            visited.append(node)
+            need_visited.extend(graph[node])
+    return visited
