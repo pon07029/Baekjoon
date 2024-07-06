@@ -136,6 +136,25 @@ def fibo(n):
     return a
 
 #######################그래프#################
+
+
+a, b, c= map(int, input().split())
+g  = {}
+for i in range(b):
+    e, f = map(int, sys.stdin.readline().split())
+    if e in g:
+        g[e].append(f)
+    else:
+        g[e] = [f]
+    if f in g:
+        g[f].append(e)
+    else:
+        g[f] = [e]
+
+
+
+
+
 from collections import deque
 def dfs2(graph, start_node):    
     visited = []
@@ -174,3 +193,66 @@ def bfs(graph, start_node):
             visited.append(node)
             need_visited.extend(graph[node])
     return visited
+
+#######################dfs#################
+n, m = map(int, input().split())
+A = [[] for _ in range(n+1)]
+visited = [False] * (n + 1)
+
+def DFS(v):
+    visited[v] = True
+    for i in A[v]:
+        if not visited[i]:
+            DFS(i)
+
+for _ in range(m):
+    s, e = map(int, input().split())
+    A[s].append(e)
+    A[e].append(s)
+
+count = 0
+
+for i in range(1, n+1):
+    if not visited[i]:
+        count += 1
+        DFS(i)
+#######################dfs#################
+
+
+import sys
+from collections import deque
+input = sys.stdin.readline
+M, N = map(int,input().split())
+graph = [list(map(int,input().split())) for _ in range(N)]
+day = 0
+dx = [1,0,-1,0]
+dy = [0,1,0,-1]
+que = deque()
+
+for i in range(N):
+    for j in range(M):
+        if graph[i][j] == 1:
+            que.append((i, j))
+
+def bfs():
+    while que:
+        x, y = que.popleft()
+
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if 0 <= nx < N and 0 <= ny < M:
+                if graph[nx][ny] == 0:
+                    graph[nx][ny] = graph[x][y] + 1
+                    que.append((nx, ny))
+
+bfs()
+for i in range(N):
+    for j in range(M):
+        if graph[i][j] == 0:
+            print(-1)
+            sys.exit()
+        day = max(day,graph[i][j])
+print(day-1)
+
+#######################bfs#################
