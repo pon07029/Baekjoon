@@ -1,5 +1,5 @@
 import sys
-
+## DFS와 BFS
 def dfs_recursive(graph, start, visited = []):
     visited.append(start)
  
