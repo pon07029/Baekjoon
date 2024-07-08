@@ -1,11 +1,12 @@
-N = list(map(int, input().split()))
-M = input()
-li=[]*len(N)
-li.append([M.find(N[0])])
-for i in range(1,len(N)):
-    for j in li[i-1]:
-        s = M.find(N[i], j[-1])
-        if s != -1:
-            li[i].append(j+[s])
+N = list(input(  ))
+M = list(input(  ))
+re = [[0] *(len(M)+1) for j in range(len(N)+1)]
 
-    li[i].append(M.find(N[i]))
+for i in range(1, len(N)+1):
+    for j in range(1, len(M)+1):
+        if N[i-1] == M[j-1]:
+            re[i][j] = re[i-1][j-1] + 1
+        else:
+            re[i][j] = max(re[i-1][j], re[i][j-1])
+
+print(max(map(max,re)))
