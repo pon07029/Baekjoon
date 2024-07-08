@@ -255,4 +255,54 @@ for i in range(N):
         day = max(day,graph[i][j])
 print(day-1)
 
-#######################bfs#################
+#######################다익스트라########################
+g = {
+    'A': {'B': 8, 'C': 1, 'D': 2},
+    'B': {},
+    'C': {'B': 5, 'D': 2},
+    'D': {'E': 3, 'F': 5},
+    'E': {'F': 1},
+    'F': {'A': 5}
+}
+
+import heapq  
+
+def dijkstra(g, start):
+  dis = {no for no in g}
+  dis[start] = 0 
+  q = []
+  heapq.heappush(q, [dis[start], start])  
+
+  while q:  
+    nowdis, now = heapq.heappop(q) 
+
+    if dis[now] < nowdis: 
+      continue
+    
+    for newend, newdis in g[now].items():
+      total = nowdis + newdis  
+      if total < dis[newend]: 
+        dis[newend] = total
+        heapq.heappush(q, [total, newend]) 
+    
+  return dis
+
+####################BAG################################
+def main():
+    n, k = map(int, input().split())
+    k += 1
+
+    bag = {0: 0}
+    data = [tuple(map(int,input().split())) for _ in range(n)]
+    data.sort(reverse=True)
+
+    for w, v in data:
+        tmp = {}
+        for v_bag, w_bag in bag.items():
+            if bag.get(nv := v + v_bag, k) > (nw := w + w_bag):
+                tmp[nv]=nw
+        bag.update(tmp)
+
+    print(max(bag.keys()))
+
+main()
