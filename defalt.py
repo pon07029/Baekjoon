@@ -257,15 +257,26 @@ for i in range(N):
 print(day-1)
 
 #######################다익스트라########################
-g = {
-    'A': {'B': 8, 'C': 1, 'D': 2},
-    'B': {},
-    'C': {'B': 5, 'D': 2},
-    'D': {'E': 3, 'F': 5},
-    'E': {'F': 1},
-    'F': {'A': 5}
-}
-
+g={}
+for i in range(N):
+    a, b, c = map(str, sys.stdin.readline().split())
+    if a in g:
+        if b in g[a]:
+            g[a][b] = min(g[a][b], int(c))
+        else:
+            g[a][b] = int(c)
+    else:
+        g[a] = {b:int(c)}
+    if b in g:
+        if a in g[b]:
+            g[b][a] = min(g[b][a], int(c))
+        else:
+            g[b][a] = int(c)
+    else:
+        g[b] = {a:int(c)}
+for i in range(1, n+1):
+    if str(i) not in g:
+        g[str(i)] = {}
 import heapq  
 
 def dijkstra(g, start):
