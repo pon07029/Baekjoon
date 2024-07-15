@@ -28,12 +28,12 @@ def air():
             li[i][j] = tmp[i][j]
 
 def clean():
-    for i in range(1, up):
+    for i in range(up-1, 0, -1):
         li[i][0] = li[i-1][0]
     for i in range(M-1):
         li[0][i] = li[0][i+1]
     for i in range(0,up):
-        li[i][M-1] = li[i+1][M-1]
+        li[i][-1] = li[i+1][-1]
     for i in range(M-1, 1, -1):
         li[up][i] = li[up][i-1]
     li[up][1] = 0
@@ -49,7 +49,10 @@ def clean():
 
 for _ in range(T):
     air()
+    # print(*li, sep='\n')
+    # print(sum([sum(li[i]) for i in range(N)])+2)
+    # print("#################################")
     clean()
     # print(*li, sep='\n')
-    print(sum([sum(li[i]) for i in range(N)])+2)
+    # print(sum([sum(li[i]) for i in range(N)])+2)
 print(sum([sum(li[i]) for i in range(N)])+2)
