@@ -15,6 +15,7 @@ data = [input().strip() for i in range(int(input()))]
 data = [sys.stdin.readline().strip() for i in range(int(input()))]
 
 import sys
+sys.setrecursionlimit(10**6)
 
 while True:
     try:
@@ -318,3 +319,47 @@ def main():
     print(max(bag.keys()))
 
 main()
+##########################벨만 포드##########################
+import sys
+
+input = sys.stdin.readline
+INF = int(1e9)
+
+v, e = map(int, input().split())
+ed = []
+dis = [INF] * (v + 1)
+
+for _ in range(e):
+    a, b, c = map(int, input().split())
+    ed.append((a, b, c))
+
+
+def bellman_ford(start):
+    dis[start] = 0
+    for i in range(v):
+        for j in range(e):
+            cur = ed[j][0]
+            ne = ed[j][1]
+            co = ed[j][2]
+            if dis[cur] != INF and dis[ne] > dis[cur] + co:
+                dis[ne] = dis[cur] + co
+                if i == v - 1:
+                    return True
+    return False
+
+
+re = bellman_ford(1)
+
+if re:
+    print("-1")
+else:
+    for i in range(2, v + 1):
+        if dis[i] == INF:
+            print("-1")
+        else:
+            print(dis[i])
+
+##############################행렬곱######################
+def solution(arr1, arr2):
+    return [[sum(i*j for i, j in zip(row, col)) for col in zip(*arr2)] for row in arr1]
+
