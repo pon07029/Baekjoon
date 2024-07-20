@@ -108,6 +108,20 @@ def binary_search(target, data):
         else:                    # target이 크면 오른쪽을 더 탐색
             start = mid + 1
     return
+# 사잇값
+def binary_search(target, start,end):
+
+    while start <= end:
+        mid = (start + end) // 2 # 중간값
+
+        if li[mid] == target:
+            return mid 
+
+        elif li[mid] > target: # target이 작으면 왼쪽을 더 탐색
+            end = mid - 1
+        else:                    # target이 크면 오른쪽을 더 탐색
+            start = mid + 1
+    return  start   
 
 
 def sosu(n):
