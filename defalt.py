@@ -344,6 +344,22 @@ def main():
     print(max(bag.keys()))
 
 main()
+
+
+n, k = map(int, input().split())
+lst=[[0, 0]]
+for _ in range(n):
+    lst.append(list(map(int, input().split())))
+dp = [[0]*(k+1) for _ in range(n+1)]
+for i in range(1, n+1):
+    for j in range(1, k+1):
+        weight = lst[i][0]
+        value = lst[i][1]
+        if j < weight:  # 가방에 넣을 수 없으면
+            dp[i][j] = dp[i - 1][j]  # 위에 값 그대로 가져오기
+        else: # 가방에 넣을 수 있으면
+            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight] + value)
+print(dp[n][k])
 ##########################벨만 포드##########################
 import sys
 
@@ -388,3 +404,35 @@ else:
 def solution(arr1, arr2):
     return [[sum(i*j for i, j in zip(row, col)) for col in zip(*arr2)] for row in arr1]
 
+#############################외판원###########################
+import sys
+N = int(input())
+li = []
+for _ in range(N):
+    li.append(list(map(int, sys.stdin.readline().split())))
+dp = {}
+def f(now, vi):
+    if vi == (1 << N) - 1:
+        if li[now][0]:
+            return li[now][0]
+        else:
+            return int(1e9)
+    if (now, vi) in dp:
+        return dp[(now, vi)] 
+    mi = int(1e9)
+    for next in range(1, N):
+        if li[now][next] == 0 or vi & (1 << next):
+            continue
+        cost = f(next, vi | (1 << next)) + li[now][next]
+        mi = min(cost, mi)
+
+    dp[(now, vi)] = mi 
+    return mi  
+print(f(0, 1))  
+
+def ff(c):
+    t=0
+    for i in range(N):
+        if c & (1 << i):
+            t+=1
+    return t
