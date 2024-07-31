@@ -436,3 +436,64 @@ def ff(c):
         if c & (1 << i):
             t+=1
     return t
+
+##########################스패닝 트리 ########################
+
+import sys
+input=sys.stdin.readline
+V, E=map(int,input().split())
+p=[i for i in range(V+1)]
+edges=[]
+re=0
+for _ in range(E):
+    a,b,c=map(int,input().split())
+    edges.append((c,a,b))
+edges.sort()
+
+def fp(x):
+    if p[x]==x:
+        return x
+    p[x]=fp(p[x])
+    return p[x]
+
+def up(a,b):
+    a=fp(a)
+    b=fp(b)
+    if a<b:
+        p[b]=a
+    else:
+        p[a]=b
+
+for edge in edges:
+    c,a,b=edge
+    if fp(a)!=fp(b):
+        up(a,b)
+        re+=c
+print(re)
+
+#########################위상 정렬#########################
+import sys
+from collections import deque
+input=sys.stdin.readline
+N, M = map(int,input().split())
+li=[0 for _ in range(N+1)]
+g=[[]for _ in range(N+1)]   
+for i in range(M):
+    a,b=map(int,input().split())
+    g[a].append(b)
+    li[b]+=1
+q=deque([])
+for i in range(1,N+1):
+    if li[i]==0:
+        q.append(i)
+
+re=[]
+while q:
+    x=q.popleft()
+    re.append(x)
+    for i in g[x]:
+        li[i]-=1
+        if li[i]==0:
+            q.append(i)
+
+print(*re)
