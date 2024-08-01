@@ -497,3 +497,76 @@ while q:
             q.append(i)
 
 print(*re)
+
+###########################프리오더 인오더#######################
+
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def build_tree(inorder, postorder, in_s, in_e):
+    global p_idx
+    if in_s > in_e:
+        return
+
+    node = Node(postorder[p_idx])
+    p_idx -= 1
+
+    index = search(inorder, in_s, in_e, node.value)
+
+    node.right = build_tree(inorder, postorder, index+1, in_e)
+    node.left = build_tree(inorder, postorder, in_s, index-1)
+
+    return node
+
+def search(inorder, start, end, target):
+    for i in range(start, end+1):
+        if inorder[i] == target:
+            return i
+
+p_idx = 0
+import sys
+input = sys.stdin.readline
+def main():
+    global p_idx
+    n=int(input())
+    inorder = list(input().split())
+    postorder = list(input().split())
+
+    p_idx = n - 1
+    root = build_tree(inorder, postorder, 0, n-1)
+
+    preorder_travlesal(root)
+
+def preorder_travlesal(node):
+    if node:
+        print(node.value, end=" ")
+        preorder_travlesal(node.left)
+        preorder_travlesal(node.right)
+
+
+main()
+
+##########################선분 교차 판정########################
+def solution(x1, y1, x2, y2, x3, y3, x4, y4):
+    ccw123 = ccw(x1, y1, x2, y2, x3, y3)
+    ccw124 = ccw(x1, y1, x2, y2, x4, y4)
+    ccw341 = ccw(x3, y3, x4, y4, x1, y1)
+    ccw342 = ccw(x3, y3, x4, y4, x2, y2)
+    mx1, my1, mx2, my2 = min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2)
+    mx3, my3, mx4, my4 = min(x3, x4), min(y3, y4), max(x3, x4), max(y3, y4)
+    # 평행
+    if ccw123*ccw124 == 0 and ccw341*ccw342 == 0:
+        if mx1 <= mx4 and mx3 <= mx2 and my1 <= my4 and my3 <= my2:
+            return 1
+    # 교차
+    else:
+        if ccw123*ccw124 <= 0 and ccw341*ccw342 <= 0:
+            return 1
+
+    return 0
+
+def ccw(x1, y1, x2, y2, x3, y3):
+    return (x2-x1)*(y3-y1) - (y2-y1)*(x3-x1)

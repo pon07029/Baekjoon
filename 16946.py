@@ -14,13 +14,14 @@ for i in range(N):
         else:
             arr[i][j] = 0
 
-
-
+kk=1
+ch=[[0]*M for _ in range(N)]
 
 def bfs(a,b):
+    global kk
     que=deque([(a,b)])
     c=0
-    tmp=[]
+    tmp=deque([])
     while que:
         c+=1
         x, y = que.popleft()
@@ -32,26 +33,39 @@ def bfs(a,b):
             if 0 <= nx < N and 0 <= ny < M:
                 if arr[nx][ny] == 0:
                     que.append((nx, ny))
-    for x,y in tmp:
+    while tmp:
+        x,y=tmp.popleft()
         arr[x][y] = c
+        ch[x][y]=kk
+        
 
 
 for i in range(N):
     for j in range(M):
         if arr[i][j] == 0:
+            kk+=1
             bfs(i,j)
 
 for i in range(N):
     for j in range(M):
         if arr[i][j] == -1:
             t=0
+            ttmp=[]
             for k in range(4):
                 nx = i + dx[k]
                 ny = j + dy[k]
                 if 0 <= nx < N and 0 <= ny < M:
                     if arr[nx][ny] != -1:
-                        t+=arr[nx][ny]
+                        ttmp.append((arr[nx][ny],ch[nx][ny]))
+            settmp=set(ttmp)
+            for a,b in settmp:
+                t+=a%10
             re[i][j] =t+1
 
-print(*arr,sep='\n')
-print(*re,sep='\n')
+# print(*arr,sep='\n')
+# print(*re,sep='\n')
+# print(*ch,sep='\n')
+for i in range(N):
+    for j in range(M):
+        print(re[i][j]%10, end='')
+    print()
