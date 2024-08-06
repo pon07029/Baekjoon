@@ -1,22 +1,19 @@
 import sys
+import heapq
 input=sys.stdin.readline
 N,K=map(int,input().split())
+li=[]
 dia=[]
 total=0
-for _ in range(N):
-    dia.append(tuple(map(int,input().split())))
-dia.sort(key=lambda x: (-x[1], -x[0]))
-bag=[]
-for _ in range(K):
-    bag.append(int(input()))
-bag.sort(reverse=True)
-start=0
+dia=[tuple(map(int,input().split())) for _ in range(N)]
+dia.sort()
+bag=[int(input()) for _ in range(K)]
+bag.sort()
 for i in bag:
-    for j in range(start,N):
-        m,v=dia[j]
-        if i>=m:
-            total+=v
-            start=j+1
-            break
+    while dia and dia[0][0]<=i:
+        heapq.heappush(li,-dia[0][1])
+        heapq.heappop(dia)
+    if li:
+        total+=-heapq.heappop(li)
 print(total)
 
