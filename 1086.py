@@ -13,10 +13,10 @@ def f(now, vi):
     tmp=[0]*K
     tp=dp[vi]
     for i in range(K):
-        print(li[now], i, vi)
-        print((tp[i]*(10**(len(str(li[now]))))+li[now]))
+        # print(li[now], i, vi)
+        # print((tp[i]*(10**(len(str(li[now]))))+li[now]))
         na=(tp[i]*(10**(len(str(li[now]))))+li[now])%K
-        print(na)
+        # print(na)
         tmp[na]+=tp[i]+1
     dp[newvi]=tmp
     for next in range(1, N):
@@ -28,4 +28,4 @@ dp[0]=tm
 for i in range(N):
     f(i, 0)
 # print(sum(dp[(1 << N) - 1]) - 1)
-print(dp)
+print(dp[(1 << N) - 1])
