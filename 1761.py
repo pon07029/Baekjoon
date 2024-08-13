@@ -1,61 +1,70 @@
+# 정점들 사이의 최단거리는 dist[a] - dist[lca] + dist[b] - dist[lca]
+# LCA를 지나는 거리가 최단거리이다.
 import sys
-input = sys.stdin.readline # 시간 초과를 피하기 위한 빠른 입력 함수
-sys.setrecursionlimit(int(1e5)) # 런타임 오류를 피하기 위한 재귀 깊이 제한 설정
-LOG = 21 # 2^20 = 1,000,000
+sys.setrecursionlimit(int(1e5))
+input = sys.stdin.readline
+LOG = 21 # (1000000의 log2를 취한 값의 올림값)(2의 i승 단위의 부모값을 저장하기 위한 크기.)
 
-n = int(input())
-parent = [[0] * LOG for _ in range(n + 1)] # 부모 노드 정보
-dis = [[0] * LOG for _ in range(n + 1)] # 부모 노드까지의 거리
-d = [0] * (n + 1) # 각 노드까지의 깊이
-c = [0] * (n + 1) # 각 노드의 깊이가 계산되었는지 여부
-graph = [[] for _ in range(n + 1)] # 그래프(graph) 정보
+# 각 노드의 depth를 찾아 기록하기 위한 dfs
+def find_depth(cur_node, parent_node,value):
+    depth[cur_node] = depth[parent_node] + 1
+    check[cur_node] = True
+    if cur_node != 1:
+        dp_dists[cur_node] += dp_dists[parent_node] + value
+    for next_node,dist in graph[cur_node]:
+        if not check[next_node]:
+            parent[next_node][0] = cur_node
+            find_depth(next_node, cur_node,dist)
 
-for _ in range(n - 1):
-    a, b = map(int, input().split())
-    graph[a].append(b)
-    graph[b].append(a)
 
-# 루트 노드부터 시작하여 깊이(depth)를 구하는 함수
-def dfs(x, depth):
-    c[x] = True
-    d[x] = depth
-    for y in graph[x]:
-        if c[y]: # 이미 깊이를 구했다면 넘기기
-            continue
-        parent[y][0] = x
-        dfs(y, depth + 1)
+# 공통조상 찾는 함수
+def LCA(a,b):
 
-# 전체 부모 관계를 설정하는 함수
-def set_parent():
-    dfs(1, 0) # 루트 노드는 1번 노드
-    for i in range(1, LOG):
-        for j in range(1, n + 1):
-            parent[j][i] = parent[parent[j][i - 1]][i - 1]
-
-# A와 B의 최소 공통 조상을 찾는 함수
-def lca(a, b):
     # b가 더 깊도록 설정
-    if d[a] > d[b]:
-        a, b = b, a
-    # 먼저 깊이(depth)가 동일하도록
-    for i in range(LOG - 1, -1, -1):
-        if d[b] - d[a] >= (1 << i):
+    if depth[a] > depth[b]:
+        a,b = b,a
+        # 더 깊은 b에 대해 동일해질때까지 올린다.
+    for i in range(LOG-1,-1,-1):
+        if depth[b] - depth[a] >= (1<<i):
             b = parent[b][i]
-    # 부모가 같아지도록
-    if a == b:
+    # 노드가 같아질 때까지 올린다.
+    if a==b:
         return a
-    for i in range(LOG - 1, -1, -1):
-        # 조상을 향해 거슬러 올라가기
+
+    for i in range(LOG - 1,-1,-1):
         if parent[a][i] != parent[b][i]:
             a = parent[a][i]
             b = parent[b][i]
-    # 이후에 부모가 찾고자 하는 조상
+    # 이후에 부모가 찾고자 하는 조상.
     return parent[a][0]
+
+def set_parent():
+    find_depth(1,0,0)
+    for i in range(1,LOG):
+        for j in range(1, n+1):
+            # preorder로 순회하며 root부터 top-down으로 부모노드를 채워 내려간다.
+            parent[j][i] = parent[parent[j][i-1]][i-1]
+    # 각 최초의 부모 노드로 부터 그 노드의 부모노드를 기록하도록 한다.()
+
+n = int(input())
+
+parent = [[0]*LOG for _ in range(n+1)] # 부모 노드 정보(n+1개의 노드에 대해 1,2,4,8,16..번째 부모값을 전부 기록.)
+depth = [0] * (n+1) # 각 노드까지의 깊이
+check = [0] * (n+1) # 깊이가 계산 되었는지 여부
+dp_dists = [0]*(n+1)
+
+graph = [[] for _ in range(n+1)]
+for _ in range(n-1):
+    a,b,c = map(int,input().split())
+    graph[a].append((b,c))
+    graph[b].append((a,c))
+
+depth[0] = -1
 
 set_parent()
 
 m = int(input())
 
 for i in range(m):
-    a, b = map(int, input().split())
-    print(lca(a, b))
+    a,b = map(int,input().split())
+    print(dp_dists[a] + dp_dists[b] - 2*dp_dists[LCA(a,b)])
