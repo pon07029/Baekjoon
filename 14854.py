@@ -53,8 +53,12 @@ def comb(n,m,p):
 def f(n,m,p):
     if n==0 or m==0: return 1
     return comb(n%p,m%p,p)*f(n//p,m//p,p)%p
+def r3s(x):
+    re=1
+    for i in range(1,x+1)
 
-
+def r3(x):
+    
 
 li=[11,13,37]
 for i in range(int(input())):
