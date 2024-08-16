@@ -979,45 +979,41 @@ for i in range(m):
 
 ################################### 단절점################################
 import sys
-from collections import defaultdict
-sys.setrecursionlimit(10**6)
-input = sys.stdin.readline
+sys.setrecursionlimit(10**5)
+input= sys.stdin.readline
+
 
 V, E = map(int, input().split())
-visit_order = [0]*(V+1)
-answer = set()
-edge_dict = defaultdict(list)
-for _ in range(E) :
-  a, b = map(int, input().split())
-  edge_dict[a].append(b)
-  edge_dict[b].append(a)
+vi, cnt = [0]*(V+1), [0]
+graph = [[]for _ in[0]*(V+1)]
+se = set()
+def dfs(node, is_root):
+      if vi[node]: return
+      cnt[0]+=1
+      vi[node] = mi = cnt[0]
+      visit_cnt = 0
+      for child in graph[node]:
+        if vi[child]:
+          mi = min(mi, vi[child])
+        else:
+          visit_cnt += 1
+          child_cnt = dfs(child, False)
+          if not is_root and child_cnt >= vi[node]:
+            se.add(node)
+          mi = min(mi, child_cnt)
+      if is_root and visit_cnt >= 2:
+        se.add(node)
+      return mi
+for _ in range(E):
+		a, b = map(int, input().split())
+		graph[a].append(b)
+		graph[b].append(a)
+for node in range(1, V+1):
+		dfs(node, True)
+	
+print(len(se))
+if se: print(*sorted(se))
 
-def dfs(node, isroot) :
-  visit_order[0]+=1
-  visit_order[node] = visit_order[0]
-  child_num = 0
-  child_order = visit_order[node]
-  
-  for nxt in edge_dict[node] :
-    if visit_order[nxt] :
-      child_order = min(child_order, visit_order[nxt])
-    else :
-      child_num += 1
-      tmp = dfs(nxt, False)
-      if not isroot and tmp >= visit_order[node] :
-        answer.add(node)
-      child_order = min(child_order, tmp)
-      
-  if isroot and child_num >= 2 :
-    answer.add(node)
-  return child_order
-
-for i in range(1,V+1) :
-  if visit_order[i] ==0 :
-    dfs(i, True)
-answer = sorted(list(answer))
-print(len(answer))
-print(*answer)
 
 #####################################SCC################################
 # SSC : Strongly Connected Component
