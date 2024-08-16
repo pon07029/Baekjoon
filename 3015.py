@@ -9,12 +9,12 @@ li=list(map(int, input().split()))
 s=deque([li[0]])
 c=0
 for i in li[1:]:
-    if s[0]>i:
+    if s[0]>=i:
         c+=len(s)
         s.appendleft(i)
     else:
         c+=len(s)
-        while s and s[0]<=i:
+        while s and s[0]<i:
             s.popleft()
         s.appendleft(i)
     print(i,s,c)

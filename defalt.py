@@ -1018,3 +1018,102 @@ for i in range(1,V+1) :
 answer = sorted(list(answer))
 print(len(answer))
 print(*answer)
+
+#####################################SCC################################
+# SSC : Strongly Connected Component
+# Tarjan's Algorithm
+import sys
+input = sys.stdin.readline
+sys.setrecursionlimit(10**6)
+import collections
+v, e = map(int, input().split())
+
+graph = collections.defaultdict(list)
+for _ in range(e):
+    a, b = map(int, input().split())
+    graph[a-1].append(b-1) #0부터 시작하기 위해 -1을 해주어 잠시 인덱스로 변환
+
+d = [-1 for _ in range(v)]
+stack=[]
+on_stack=[False for _ in range(v)]
+id=0
+re=[]
+def dfs(cur):
+    global id
+    id +=1
+    d[cur] = id
+    stack.append(cur)
+    on_stack[cur] = True
+    
+    parent = d[cur]
+    for next in graph[cur]:
+        if d[next]==-1: #방문 이력이 없는 노드
+            parent= min(parent, dfs(next))
+        elif on_stack[next]: #방문 체크는 되어있지만 아직 처리 완료 X
+            parent = min(parent, d[next])
+
+    if parent == d[cur]: #자신과 부모가 동일
+        scc = []
+        while True:
+            node = stack.pop()
+            on_stack[node] = False
+            scc.append(node+1) #인덱스를 다시 숫자로 변환
+            if cur == node:
+                break
+        scc.sort()
+        re.append(scc)
+    return parent
+
+for i in range(v):
+    if d[i] ==-1: #방문 이력이 없는 노드
+        dfs(i)
+re.sort(key=lambda x:x[0])
+print(len(re))
+print("".join([" ".join(map(str, x))+" -1 \n" for x in re]))
+
+
+
+##############################2-SAT################################
+import sys
+sys.setrecursionlimit(10 ** 5)
+M,N = map(int, sys.stdin.readline().split())
+graph = [[] for _ in range(2 * N + 1)]
+for _ in range(M):
+    a, b = map(int, sys.stdin.readline().split())
+    graph[-a].append(b)
+    graph[-b].append(a)
+scc_num = 1
+idx = 1
+stack = []
+scc_idx = [0] * (2 * N + 1)
+check = [0] * (2 * N + 1)
+visit = [0] * (2 * N + 1)
+def SCC(node):
+    global idx, scc_num
+    visit[node] = idx
+    root = idx
+    idx += 1
+    stack.append(node)
+    for nxt in graph[node]:
+        if not visit[nxt]:
+            root = min(root, SCC(nxt))
+        elif not check[nxt]:
+            root = min(root, visit[nxt])
+    if root == visit[node]:
+        while stack:
+            top = stack.pop()
+            check[top] = 1
+            scc_idx[top] = scc_num
+            if node == top:
+                break
+        scc_num += 1
+    return root
+for i in range(1, N + 1):
+    if not visit[i]:
+        SCC(i)
+for i in range(1, N + 1):
+    if scc_idx[i] == scc_idx[-i]:
+        print(0)
+        break
+else:
+    print(1)
