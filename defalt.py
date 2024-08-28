@@ -285,24 +285,25 @@ print(day-1)
 #######################다익스트라########################
 import sys
 import heapq  
-n, M, end = map(int, sys.stdin.readline().split()) 
+input= sys.stdin.readline
+n, M = map(int, sys.stdin.readline().split()) 
 g={}
 for i in range(M):
-    a, b, c = map(str, sys.stdin.readline().split())
+    a, b, c = map(int, sys.stdin.readline().split())
     if a in g:
         if b in g[a]:
-            g[a][b] = min(g[a][b], int(c))
+            g[a][b] = min(g[a][b], c)
         else:
-            g[a][b] = int(c)
+            g[a][b] = c
     else:
-        g[a] = {b:int(c)}
+        g[a] = {b:c}
 for i in range(1, n+1):
-    if str(i) not in g:
-        g[str(i)] = {}
+    if i not in g:
+        g[i] = {}
 
 
 def dijkstra(start):
-  dis = {str(i): float('inf') for i in range(1, n+1)}
+  dis = {i: float('inf') for i in range(1, n+1)}
   dis[start] = 0 
   q = []
   heapq.heappush(q, [dis[start], start])  
@@ -1113,3 +1114,32 @@ for i in range(1, N + 1):
         break
 else:
     print(1)
+
+#################################### 이분탐색   ############################
+# pypy
+# name 하면 더 줄어듬
+import sys
+input=sys.stdin.readline
+N, M= map(int, input().split())
+graph = [list(map(int, input().split()))[1:] for _ in range(N)]
+selected = [-1] * (M + 1)
+def bimatch(N):                                           
+    if visited[N]:                                        
+        return False                                      
+    visited[N] = True                                                                       
+    for num in graph[N]:                                   
+        if selected[num] == -1:         
+            selected[num] = N                                
+            return True    
+    for num in graph[N]:                                   
+        if bimatch(selected[num]):                         
+            selected[num] = N                                
+            return True
+
+    return False   
+re = 0 
+for i in range(N):            
+    visited = [False] * (N)      
+    if bimatch(i):
+        re += 1
+print(re)

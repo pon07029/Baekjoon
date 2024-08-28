@@ -1,31 +1,40 @@
 import sys
-N, M = int(input())
+input=sys.stdin.readline
+N, M =map(int, input().split())
 li = []
 for _ in range(N):
-    li.append(list(map(int, sys.stdin.readline().split())))
-dp = {}
-def f(now, vi):
-    if vi == (1 << N) - 1:
-        if li[now][0]:
-            return li[now][0]
-        else:
-            return int(1e9)
-    if (now, vi) in dp:
-        return dp[(now, vi)] 
-    mi = int(1e9)
-    for next in range(1, N):
-        if li[now][next] == 0 or vi & (1 << next):
-            continue
-        cost = f(next, vi | (1 << next)) + li[now][next]
-        mi = min(cost, mi)
+    li.append(list(input().rstrip()))
+tmp=[]
+for i in range(N):
+    for j in range(M):
+        if li[i][j]=="1":
+            tmp.append((i,j))
 
-    dp[(now, vi)] = mi 
-    return mi  
-print(f(0, 1))  
+def f(x,y,size):
+    for i in range(size):
+        if li[x+i+size-1][y-size+1+i]!="1" or li[x+i+size-1][y+size-1-i]!="1":
+            return False
+    return True
+def ff(x,y,size):
+    i=size-1
+    if li[x+i][y-i]!="1" or li[x+i][y+i]!="1":
+            return False
+    return True
 
-def ff(c):
-    t=0
-    for i in range(N):
-        if c & (1 << i):
-            t+=1
-    return t
+siz=1
+mx=0
+if tmp:
+    mx=1
+while tmp:
+    # print(siz, tmp)
+    siz+=1
+    tm=[]
+    for i, j in tmp:
+        if j>=siz-1 and i<N-siz-siz+2 and j <= M-siz:
+            if ff(i,j,siz):
+                # print(i,j)
+                tm.append((i,j))
+                if f(i,j,siz):
+                    mx=siz
+    tmp=tm
+print(mx)
